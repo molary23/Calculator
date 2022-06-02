@@ -1,0 +1,147 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      http-equiv="X-UA-Compatible"
+      content="IE=8,IE=EmulateIE8,IE=7,IE=EmulateIE7"
+    />
+    <title>Calculator</title>
+    <link rel="stylesheet" type="text/css" href="style/calc.css" />
+  </head>
+  <body>
+    <div class="inner">
+      <h1>Basic Calculator</h1>
+      <div class="calc_body">
+        <div class="calc_screen">
+          <div class="small_dsp"></div>
+          <div class="tiny_dsp"></div>
+          <div class="big_dsp">0</div>
+        </div>
+        <div class="calc_buttons">
+          <div class="numerics">
+            <button class="btn">1</button>
+            <button class="btn">2</button>
+            <button class="btn">3</button>
+            <button class="btn">4</button>
+            <button class="btn">5</button>
+            <button class="btn">6</button>
+            <button class="btn">7</button>
+            <button class="btn">8</button>
+            <button class="btn">9</button>
+            <button class="btn">0</button>
+            <button class="btn" id="minus">+/-</button>
+            <button class="btn" id="dot">.</button>
+          </div>
+          <div class="controls">
+            <button class="btn">+</button>
+            <button class="btn">-</button>
+            <button class="btn">*</button>
+            <button class="btn">/</button>
+            <button class="btn" id="percent">%</button>
+            <button class="btn" id="equalTo">=</button>
+            <button class="btn btn_ce">CE</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+
+  <script>
+    let numBtn = document.querySelectorAll(".numerics .btn"),
+      bigDisplay = document.querySelector(".big_dsp"),
+      smallDisplay = document.querySelector(".small_dsp"),
+      tinyDisplay = document.querySelector(".tiny_dsp"),
+      conBtn = document.querySelectorAll(".controls .btn"),
+      valA = 0,
+      valB = 0,
+      valC = 0,
+      str = "",
+      eq = 0;
+    (equalTo = document.getElementById("equalTo")),
+      (ce = document.querySelector(".btn_ce")),
+      (dot = document.getElementById("dot")),
+      (minus = document.getElementById("minus"));
+
+    numBtn.forEach((btn) => {
+      btn.addEventListener("click", function () {
+        if (eq === 1) {
+          smallDisplay.innerHTML = "";
+        }
+        let check = Number.isInteger(valC);
+        if (!check) {
+          dot.setAttribute("disabled", "disabled");
+        }
+        btn_digit = btn.innerHTML;
+        if (btn_digit === "+/-") {
+          str = bigDisplay.innerHTML;
+          firstIndex = str[0];
+          if (firstIndex === "-") {
+            valC = parseFloat(str.slice(1));
+          } else {
+            valC = parseFloat(`-${str}`);
+          }
+        } else if (btn_digit === ".") {
+          valC = `${valC}.`;
+        } else if (bigDisplay.innerHTML !== "") {
+          valC = parseFloat(`${valC}${btn_digit}`);
+        } else {
+          valC = parseFloat(btn_digit);
+        }
+        bigDisplay.innerHTML = valC;
+      });
+    });
+
+    conBtn.forEach((btn) => {
+      btn.addEventListener("click", function () {
+        eq = 0;
+        dot.removeAttribute("disabled", "disabled");
+        let prevBtn = tinyDisplay.innerHTML;
+        btn_control = btn.innerHTML;
+        tinyDisplay.innerHTML = btn_control;
+        valA = parseFloat(valC, 10);
+        valC = 0;
+        if (prevBtn !== "") {
+          btn_control = prevBtn;
+        }
+        if (smallDisplay.innerHTML === "") {
+          smallDisplay.innerHTML = valA;
+        } else {
+          switch (btn_control) {
+            case "+":
+              valB = parseFloat(smallDisplay.innerHTML) + valA;
+              break;
+            case "-":
+              valB = parseFloat(smallDisplay.innerHTML) - valA;
+              break;
+            case "*":
+              valB = parseFloat(smallDisplay.innerHTML) * valA;
+              break;
+            case "/":
+              valB = parseFloat(smallDisplay.innerHTML) / valA;
+              break;
+            case "%":
+              valB = parseFloat(smallDisplay.innerHTML * valA) / 100;
+              break;
+          }
+          smallDisplay.innerHTML = valB;
+        }
+      });
+    });
+
+    equalTo.addEventListener("click", function () {
+      valB = parseInt(smallDisplay.innerHTML);
+      bigDisplay.innerHTML = 0;
+      eq = 1;
+    });
+
+    ce.addEventListener("click", function () {
+      valA, valB, (eq = 0);
+      bigDisplay.innerHTML = 0;
+      smallDisplay.innerHTML = "";
+      tinyDisplay.innerHTML = "";
+    });
+  </script>
+  <style></style>
+</html>
